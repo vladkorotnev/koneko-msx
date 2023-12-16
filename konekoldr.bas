@@ -1,7 +1,7 @@
 5 CLS:PRINT"KONEKOLoader1.0"
 10 _COMINI("0:8N1NNNNN",{ldrbaud},{ldrbaud},0)
 20 CLEAR100,{dstaddr}
-25 A={dstaddr}
+25 A={dstaddr}:D={dstaddr}
 30 OPEN"com:"FORINPUTAS#1
 40 IFEOF(1)THEN100
 50 LINEINPUT#1,L$:PRINTL$;
@@ -10,5 +10,5 @@
 80 GOTO40
 100 CLOSE#1
 110 PRINT"":PRINT"Running..."
-120 DEFUSR=A
+120 DEFUSR=D
 130 X=USR(0)
