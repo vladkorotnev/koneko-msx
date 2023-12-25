@@ -100,9 +100,9 @@ USR2 ; Write bytes
 
     LD IX, _BYTEBUF
     LD HL, (_SADDR)
-    ; We'll be looping #100 times
+    ; We'll be looping #1000 times
     LD B, 0
-    LD C, #1
+    LD C, #10
 
     ; Request byte write
 _nextByte
@@ -143,7 +143,7 @@ _failWriting
 BUSYWAIT
     ; Delay 150us+
     DUP 80
-    OR 0 ; 4Tstates
+    OR 0 ; 4Tstates x 240ns = 0.96us
     EDUP
     RET
 

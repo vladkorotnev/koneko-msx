@@ -38,25 +38,24 @@ ser = serial.Serial(args.port, 1200, bytesize=8, parity='N', stopbits=1, timeout
 ser.write(bytes(loader, 'ascii'))
 ser.write(b'\x1A') # EOF
 ser.flush()
-#ser.close()
+ser.close()
 
 time.sleep(3)
 
 print("Send PROG...")
 file=open("prog.bin",'rb').read()
-#ser = serial.Serial(args.port, 9600, bytesize=8, parity='N', stopbits=1, timeout=None, xonxoff=0, rtscts=0)
+ser = serial.Serial(args.port, 9600, bytesize=8, parity='N', stopbits=1, timeout=None, xonxoff=0, rtscts=0)
 
 def sendbin(bin):
     for byte in bin:
         ser.write(bytes(f"{byte:x}\r\n", 'ascii'))
         ser.flush()
         time.sleep(0.05)
-    ser.write(b'\x1A') # EOF
+    ser.write(b'Z\r\n') # EOF
     ser.flush()
 
 def sendFinish():
     ser.write(bytes("Q\r\n", 'ascii'))
-    ser.write(b'\x1A') # EOF
     ser.flush()
 
 sendbin(file)
@@ -64,25 +63,26 @@ sendbin(file)
 done = False
 pos = 0
 addr = args.address
-sliceSize = 0x100
+sliceSize = 0x1000
 
 
 print("Entering COMM Loop")
 while not done:
     line = ser.readline()
-    print(line)
+    # print(line)
     line = line.strip().replace(b"\x1A", b"").replace(b"\x00", b"")
     print("Receive: ", line)
     if line == b"A":
-        time.sleep(1)
+        time.sleep(0.5)
         tmp = pos + addr
         msb = ((tmp & 0xFF00) >> 8)
         lsb = tmp & 0xFF
+        print("Done "+hex(pos)+" of "+hex(len(rom)))
         ser.write(bytes(f"{lsb:x}\r\n", 'ascii'))
         ser.write(bytes(f"{msb:x}\r\n", 'ascii'))
-        ser.write(b'\x1A') # EOF
+        ser.write(b'Z\r\n') # EOF
         ser.flush()
-        time.sleep(1)
+        time.sleep(0.5)
     elif line == b"?":
         time.sleep(0.5)
         if pos < len(rom):
