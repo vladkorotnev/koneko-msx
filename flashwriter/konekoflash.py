@@ -50,7 +50,7 @@ def sendbin(bin):
     for byte in bin:
         ser.write(bytes(f"{byte:x}\r\n", 'ascii'))
         ser.flush()
-        time.sleep(0.05)
+        time.sleep(0.03)
     ser.write(b'Z\r\n') # EOF
     ser.flush()
 
@@ -63,7 +63,7 @@ sendbin(file)
 done = False
 pos = 0
 addr = args.address
-sliceSize = 0x1000
+sliceSize = 0x100
 
 
 print("Entering COMM Loop")
@@ -73,7 +73,6 @@ while not done:
     line = line.strip().replace(b"\x1A", b"").replace(b"\x00", b"")
     print("Receive: ", line)
     if line == b"A":
-        time.sleep(0.5)
         tmp = pos + addr
         msb = ((tmp & 0xFF00) >> 8)
         lsb = tmp & 0xFF
@@ -82,9 +81,7 @@ while not done:
         ser.write(bytes(f"{msb:x}\r\n", 'ascii'))
         ser.write(b'Z\r\n') # EOF
         ser.flush()
-        time.sleep(0.5)
     elif line == b"?":
-        time.sleep(0.5)
         if pos < len(rom):
             curSlice = rom[pos:pos + sliceSize]
             if len(curSlice) < sliceSize:

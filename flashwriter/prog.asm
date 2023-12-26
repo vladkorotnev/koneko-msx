@@ -100,9 +100,9 @@ USR2 ; Write bytes
 
     LD IX, _BYTEBUF
     LD HL, (_SADDR)
-    ; We'll be looping #1000 times
+    ; We'll be looping #100 times
     LD B, 0
-    LD C, #10
+    LD C, #1
 
     ; Request byte write
 _nextByte
